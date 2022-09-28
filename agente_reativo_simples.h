@@ -4,12 +4,14 @@
 #include "item.h"
 #include "acoes.h"
 
+#define TAMANHO_AMBIENTE 20
+
 typedef struct reativo_simples
 {
     Item item;
 } Reativo_Simples;
 
-int *sensor(int **ambiente); // recebe a matriz do ambiente e retorna vetor de 2 pos.: uma com a linha atual e outra com a coluna atual
+int *sensor(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas); // recebe a matriz do ambiente e retorna vetor de 2 pos.: uma com a linha atual e outra com a coluna atual
 int funcaoAgente(int *pos); // recebe um vetor com as coordenadas atuais e retorna um inteiro que representa a acao a ser tomada a seguir
 int atuador(int acao); // recebe um inteiro que representa a acao a ser tomada e retorna a confirmacao (ou nao) da realizacao
 

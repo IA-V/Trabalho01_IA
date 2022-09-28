@@ -1,10 +1,11 @@
 # depslib dependency file v1.0
-1664328305 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.c
+1664372689 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.c
 	<stdio.h>
 	<stdlib.h>
+	<conio.h>
 	"agente_reativo_simples.h"
 
-1664325866 c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.h
+1664371087 c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.h
 	"item.h"
 	"acoes.h"
 
@@ -12,11 +13,11 @@
 
 1664327385 c:\users\iagov\onedrive\documentos\trabalho01_ia\acoes.h
 
-1664327897 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\main.c
+1664372598 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\main.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
-	"agente_reativo_simples.c"
+	"agente_reativo_simples.h"
 	"item.h"
 
 1664328305 c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.c
