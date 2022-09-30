@@ -3,6 +3,7 @@
 
 #define TIPO1 10
 #define TIPO2 20
+#define SEM_ITEM 0
 
 /*
 * Tipo de item:

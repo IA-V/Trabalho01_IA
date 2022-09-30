@@ -1,27 +1,35 @@
 # depslib dependency file v1.0
-1664372689 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.c
+1664572648 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.c
 	<stdio.h>
 	<stdlib.h>
 	<conio.h>
 	"agente_reativo_simples.h"
 
-1664371087 c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.h
+1664572120 c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.h
 	"item.h"
 	"acoes.h"
+	"ambiente.h"
 
-1664326736 c:\users\iagov\onedrive\documentos\trabalho01_ia\item.h
+1664456895 c:\users\iagov\onedrive\documentos\trabalho01_ia\item.h
 
-1664327385 c:\users\iagov\onedrive\documentos\trabalho01_ia\acoes.h
+1664562785 c:\users\iagov\onedrive\documentos\trabalho01_ia\acoes.h
 
-1664372598 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\main.c
+1664572452 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\main.c
 	<stdio.h>
 	<stdlib.h>
 	<time.h>
 	"agente_reativo_simples.h"
 	"item.h"
+	"ambiente.h"
 
 1664328305 c:\users\iagov\onedrive\documentos\trabalho01_ia\agente_reativo_simples.c
 	<stdio.h>
 	<stdlib.h>
 	"agente_reativo_simples.h"
+
+1664572691 source:c:\users\iagov\onedrive\documentos\trabalho01_ia\ambiente.c
+	"ambiente.h"
+	"item.h"
+
+1664572404 c:\users\iagov\onedrive\documentos\trabalho01_ia\ambiente.h
 

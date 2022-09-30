@@ -11,4 +11,8 @@
 #define PEGAR 5
 #define SOLTAR 6
 
+// CONDICAO DE PARADA
+#define INICIAR 7
+#define PARAR 8
+
 #endif
