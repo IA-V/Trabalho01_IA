@@ -32,10 +32,18 @@
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="acoes.h" />
+		<Unit filename="agente_reativo_modelos.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="agente_reativo_modelos.h" />
 		<Unit filename="agente_reativo_simples.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="agente_reativo_simples.h" />
+		<Unit filename="ambiente.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ambiente.h" />
 		<Unit filename="item.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />

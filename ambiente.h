@@ -5,6 +5,7 @@
 
 int ambiente[TAMANHO_AMBIENTE][TAMANHO_AMBIENTE];
 int ambiente_virtual[TAMANHO_AMBIENTE][TAMANHO_AMBIENTE];
+extern int pts;
 
 void inicializar_ambiente(int ambiente[][TAMANHO_AMBIENTE]);
 void exibir_ambiente(int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[][TAMANHO_AMBIENTE], int linhas, int colunas);

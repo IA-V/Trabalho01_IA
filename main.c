@@ -3,6 +3,7 @@
 #include <time.h>
 
 #include "agente_reativo_simples.h"
+#include "agente_reativo_modelos.h"
 #include "item.h"
 #include "ambiente.h"
 
@@ -10,7 +11,6 @@ int main()
 {
     time_t t;
 
-    int linha, coluna;
     srand((unsigned) time(&t));
 
     inicializar_ambiente(ambiente_virtual);
@@ -20,6 +20,7 @@ int main()
 
     adiciona_itens_ambiente(ambiente);
 
-    iniciarRS();
+    // iniciarRS();
+    iniciarRM();
     return 0;
 }

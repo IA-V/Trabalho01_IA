@@ -2,29 +2,42 @@
 #include <stdlib.h>
 #include <conio.h>
 
-#include "agente_reativo_simples.h"
+#include "agente_reativo_modelos.h"
 
-typedef struct _reativo_simples_
+typedef struct _ponto_
 {
+    int x;
+    int y;
+} Ponto;
+
+typedef struct _reativo_modelos_
+{
+    int acao_anterior;
+    Ponto *historico;
     Item *item;
-} Reativo_Simples;
+} Reativo_Modelos;
 
 
-Reativo_Simples agente;
-int pts;
+Reativo_Modelos agente;
+int pts = 0;
 
-void iniciarRS()
+void iniciarRM()
 {
     agente.item = (Item*)malloc(sizeof(Item));
     agente.item->tipoItem = SEM_ITEM;
+    agente.acao_anterior = INICIAR;
+
+    agente.historico = (Ponto*)malloc(sizeof(Ponto));
+    agente.historico->x = 0;
+    agente.historico->y = 0;
 
     int *pos_atual;
+    int acao;
 
-    int acao = INICIAR;
     do {
-        pos_atual = sensorRS(ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
-        acao = funcaoAgenteRS(pos_atual, ambiente);
-        atuadorRS(acao, ambiente, ambiente_virtual, pos_atual);
+        pos_atual = sensorRM(ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
+        acao = funcaoAgenteRM(pos_atual, ambiente);
+        atuadorRM(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
     }while(pts < 150);
 
@@ -33,7 +46,7 @@ void iniciarRS()
     free(pos_atual);
 }
 
-int *sensorRS(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
+int *sensorRM(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
 {
     int *pos_atual = (int *)malloc(2*sizeof(int)); // Armazena a linha e a coluna atual (respectivamente) do agente no ambiente
 
@@ -41,7 +54,6 @@ int *sensorRS(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
     {
         for(int j = 0; j < TAMANHO_AMBIENTE; j++)
         {
-            // printf("ambiente em i e j = %d\n", ambiente[i][j]);
             if(ambiente[i][j] == 'A')
             {
                 pos_atual[0] = i;
@@ -51,14 +63,10 @@ int *sensorRS(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
             }
         }
     }
-    return pos_atual;// atuadorRS(acao, ambiente, linhas, colunas);
-    /*int acao = funcaoAgenteRS(pos_atual);
-    free(pos_atual);*/
-    // printf("%d\n", pos_atual[0]);
-    // return pos_atual;
+    return pos_atual;
 }
 
-int funcaoAgenteRS(int *pos, int ambiente[][TAMANHO_AMBIENTE])
+int funcaoAgenteRM(int *pos, int ambiente[][TAMANHO_AMBIENTE])
 {
     // Acao com base na pos
     int linha_atual = pos[0];
@@ -75,18 +83,33 @@ int funcaoAgenteRS(int *pos, int ambiente[][TAMANHO_AMBIENTE])
                 acao = PEGAR;
                 break;
             case SEM_ITEM:
-                if(linha_atual % 2 == 0 && coluna_atual < TAMANHO_AMBIENTE-1)
+                switch(agente.acao_anterior)
                 {
-                    acao = DIREITA;
-                } else if(linha_atual % 2 != 0 && coluna_atual > 0) {
-                    acao = ESQUERDA;
-                } else if((linha_atual % 2 == 0 && coluna_atual == TAMANHO_AMBIENTE-1) || (linha_atual % 2 != 0 && coluna_atual == 0)) {
-                    acao = BAIXO;
+                    case SOLTAR: // Movimentacao de retorno ao ponto anterior
+                        if(coluna_atual < agente.historico->x)
+                        {
+                            acao = DIREITA;
+                        } else if(linha_atual < agente.historico->y) {
+                            acao = BAIXO;
+                        } else {
+                            agente.acao_anterior = INICIAR;
+                        }
+                        break;
+                    default: // Movimentacao padrao
+                        if(linha_atual % 2 == 0 && coluna_atual < TAMANHO_AMBIENTE-1)
+                        {
+                            acao = DIREITA;
+                        } else if(linha_atual % 2 != 0 && coluna_atual > 0) {
+                            acao = ESQUERDA;
+                        } else if((linha_atual % 2 == 0 && coluna_atual == TAMANHO_AMBIENTE-1) || (linha_atual % 2 != 0 && coluna_atual == 0)) {
+                            acao = BAIXO;
+                        }
                 }
+
                 break;
         }
 
-    } else {
+    } else { // Movimentacao de retorno ao ponto inicial
         if(linha_atual > 0)
         {
             acao = CIMA;
@@ -100,7 +123,7 @@ int funcaoAgenteRS(int *pos, int ambiente[][TAMANHO_AMBIENTE])
     return acao;
 }
 
-int atuadorRS(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[][TAMANHO_AMBIENTE], int *pos_atual)
+int atuadorRM(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[][TAMANHO_AMBIENTE], int *pos_atual)
 {
     int linha_atual = pos_atual[0];
     int coluna_atual = pos_atual[1];
@@ -126,11 +149,14 @@ int atuadorRS(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         case PEGAR:
             agente.item->tipoItem = ambiente[linha_atual][coluna_atual];
+            agente.historico->y = linha_atual;
+            agente.historico->x = coluna_atual;
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;
         case SOLTAR:
             pts += agente.item->tipoItem;
             agente.item->tipoItem = SEM_ITEM;
+            agente.acao_anterior = SOLTAR;
             break;
         case INICIAR:
         case PARAR:
