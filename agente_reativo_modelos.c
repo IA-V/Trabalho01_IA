@@ -19,7 +19,7 @@ typedef struct _reativo_modelos_
 
 
 Reativo_Modelos agente;
-int pts = 0;
+int pts;
 
 void iniciarRM()
 {
@@ -92,7 +92,7 @@ int funcaoAgenteRM(int *pos, int ambiente[][TAMANHO_AMBIENTE])
                         } else if(linha_atual < agente.historico->y) {
                             acao = BAIXO;
                         } else {
-                            agente.acao_anterior = INICIAR;
+                            agente.acao_anterior = INICIAR; // So precisa ser diferente de "SOLTAR"
                         }
                         break;
                     default: // Movimentacao padrao

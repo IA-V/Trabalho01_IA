@@ -4,6 +4,7 @@
 
 #include "agente_reativo_simples.h"
 #include "agente_reativo_modelos.h"
+#include "agente_objetivos.h"
 #include "item.h"
 #include "ambiente.h"
 
@@ -21,6 +22,7 @@ int main()
     adiciona_itens_ambiente(ambiente);
 
     // iniciarRS();
-    iniciarRM();
+    // iniciarRM();
+    iniciarBO();
     return 0;
 }
