@@ -51,11 +51,7 @@ int *sensorRS(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
             }
         }
     }
-    return pos_atual;// atuadorRS(acao, ambiente, linhas, colunas);
-    /*int acao = funcaoAgenteRS(pos_atual);
-    free(pos_atual);*/
-    // printf("%d\n", pos_atual[0]);
-    // return pos_atual;
+    return pos_atual;
 }
 
 int funcaoAgenteRS(int *pos, int ambiente[][TAMANHO_AMBIENTE])

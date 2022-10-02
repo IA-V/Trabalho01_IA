@@ -107,15 +107,6 @@ void alocar_mem()
     agente.historico->proximo->proximo = NULL;
 }
 
-/*void realocar_mem()
-{
-    int indice = 0;
-    int tamanho_novo = (tamanho_historico+1);
-    agente.historico = (Ponto **)realloc(agente.historico, tamanho_novo* sizeof(Ponto*));
-
-    agente.historico[tamanho_novo-1] = NULL;
-}*/
-
 int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
 {
     int acao;
@@ -167,44 +158,9 @@ int coletar(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
                 } else if(linha_atual < atual->y)
                 {
                     acao = BAIXO;
-                } /*else if(coluna_atual > atual->x) {
-                    acao = ESQUERDA;
-                } else if(linha_atual > atual->y) {
-                    acao = CIMA;
-                }*/ else {
+                } else {
                     acao = INICIAR;
-                    // atual = atual->proximo;
                 }
-                /*switch(agente.acao_anterior)
-                {
-                    case SOLTAR: // Movimentacao de retorno ao ponto anterior
-                        if(coluna_atual < atual->x)
-                        {
-                            acao = DIREITA;
-                        } else if(linha_atual < atual->y) {
-                            acao = BAIXO;
-                        } else {
-                            agente.acao_anterior = INICIAR; // So precisa ser diferente de "SOLTAR"
-                            atual = atual->proximo;
-                            // index_ponto_atual++;
-                        }
-                        break;
-                    default:
-                        // printf("PASSOU AQ\n");
-                        if(coluna_atual < atual->x)
-                        {
-                            acao = DIREITA;
-                        } else if(linha_atual < atual->y)
-                        {
-                            acao = BAIXO;
-                        } else if(coluna_atual > atual->x) {
-                            acao = ESQUERDA;
-                        } else if(linha_atual > atual->y) {
-                            acao = CIMA;
-                            // index_ponto_atual++;
-                        }
-                        break;
-                }*/
 
                 break;
         }
