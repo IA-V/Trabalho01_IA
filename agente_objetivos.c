@@ -8,13 +8,14 @@ typedef struct _ponto_
 {
     int x;
     int y;
+    struct _ponto_ *proximo;
 } Ponto;
 
 typedef struct _agente_objetivos_
 {
     int estado;
     int acao_anterior;
-    Ponto **historico;
+    Ponto *historico;
     Item *item;
 } Agente_Objetivos;
 
@@ -22,6 +23,7 @@ int index_ponto_atual = 0; // Indice para o ponto atual do historico
 int tamanho_historico = 0;
 
 Agente_Objetivos agente;
+Ponto *atual, *primeiro;
 int pts = 0;
 
 void iniciarBO()
@@ -30,9 +32,11 @@ void iniciarBO()
     agente.item->tipoItem = SEM_ITEM;
     agente.acao_anterior = INICIAR;
 
-    agente.historico = (Ponto**)malloc(sizeof(Ponto*));
+    agente.historico = (Ponto*)malloc(sizeof(Ponto));
     // agente.historico[0] = (Ponto*)malloc(sizeof(Ponto));
-    agente.historico[0] = NULL;
+    primeiro = agente.historico;
+    atual = agente.historico;
+    agente.historico->proximo = NULL;
     /*agente.historico[0]->x = 0;
     agente.historico[0]->y = 0;*/
 
@@ -50,6 +54,7 @@ void iniciarBO()
         acao = funcaoAgenteBO(pos_atual, ambiente);
         atuadorBO(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
+        // printar_historico();
     }while(pts < 150);
 
     printar_historico();
@@ -60,11 +65,14 @@ void iniciarBO()
 
 void printar_historico()
 {
-    int tamanho = sizeof(agente.historico)/sizeof(agente.historico[0]);
-    printf("Index == %d\n", index_ponto_atual);
-    for(int i = 0; i < index_ponto_atual; i++)
+    Ponto *aux = primeiro;
+    int i = 1;
+    printf("\tHISTORICO DE ITENS:\n");
+    while(aux != NULL)
     {
-        printf("Ponto %d: X = %d, Y = %d\n", i, agente.historico[i]->x, agente.historico[i]->y);
+        printf("Ponto %d: X = %d, Y = %d\n", i, aux->x, aux->y);
+        aux = aux->proximo;
+        i++;
     }
 }
 
@@ -90,17 +98,23 @@ int *sensorBO(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
 
 void alocar_mem()
 {
-    agente.historico[tamanho_historico] = (Ponto*)malloc(sizeof(Ponto));
+    Ponto *aux = agente.historico;
+    while(aux != NULL)
+    {
+        aux = aux->proximo;
+    }
+    agente.historico->proximo = (Ponto*)malloc(sizeof(Ponto));
+    agente.historico->proximo->proximo = NULL;
 }
 
-void realocar_mem()
+/*void realocar_mem()
 {
     int indice = 0;
     int tamanho_novo = (tamanho_historico+1);
     agente.historico = (Ponto **)realloc(agente.historico, tamanho_novo* sizeof(Ponto*));
 
     agente.historico[tamanho_novo-1] = NULL;
-}
+}*/
 
 int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
 {
@@ -110,11 +124,13 @@ int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atu
     {
         case TIPO1:
         case TIPO2:
-            alocar_mem();
-            agente.historico[tamanho_historico]->x = coluna_atual;
-            agente.historico[tamanho_historico]->y = linha_atual;
-            tamanho_historico++;
-            realocar_mem();
+            agente.historico->x = coluna_atual;
+            agente.historico->y = linha_atual;
+            if(agente.historico->proximo == NULL)
+            {
+                alocar_mem();
+            }
+            agente.historico = agente.historico->proximo;
         case SEM_ITEM: // Movimentacao padrao
             if(linha_atual % 2 == 0 && coluna_atual < TAMANHO_AMBIENTE-1)
             {
@@ -145,34 +161,50 @@ int coletar(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
                 acao = PEGAR;
                 break;
             case SEM_ITEM:
-                switch(agente.acao_anterior)
+                if(coluna_atual < atual->x)
+                {
+                    acao = DIREITA;
+                } else if(linha_atual < atual->y)
+                {
+                    acao = BAIXO;
+                } /*else if(coluna_atual > atual->x) {
+                    acao = ESQUERDA;
+                } else if(linha_atual > atual->y) {
+                    acao = CIMA;
+                }*/ else {
+                    acao = INICIAR;
+                    // atual = atual->proximo;
+                }
+                /*switch(agente.acao_anterior)
                 {
                     case SOLTAR: // Movimentacao de retorno ao ponto anterior
-                        if(coluna_atual < agente.historico[index_ponto_atual]->x)
+                        if(coluna_atual < atual->x)
                         {
                             acao = DIREITA;
-                        } else if(linha_atual < agente.historico[index_ponto_atual]->y) {
+                        } else if(linha_atual < atual->y) {
                             acao = BAIXO;
                         } else {
                             agente.acao_anterior = INICIAR; // So precisa ser diferente de "SOLTAR"
-                            index_ponto_atual++;
+                            atual = atual->proximo;
+                            // index_ponto_atual++;
                         }
                         break;
                     default:
                         // printf("PASSOU AQ\n");
-                        if(coluna_atual < agente.historico[index_ponto_atual]->x)
+                        if(coluna_atual < atual->x)
                         {
                             acao = DIREITA;
-                        } else if(linha_atual < agente.historico[index_ponto_atual]->y)
+                        } else if(linha_atual < atual->y)
                         {
                             acao = BAIXO;
-                        } else if(coluna_atual > agente.historico[index_ponto_atual]->x) {
+                        } else if(coluna_atual > atual->x) {
                             acao = ESQUERDA;
-                        } else if(linha_atual > agente.historico[index_ponto_atual]->y) {
+                        } else if(linha_atual > atual->y) {
                             acao = CIMA;
+                            // index_ponto_atual++;
                         }
                         break;
-                }
+                }*/
 
                 break;
         }
@@ -216,7 +248,8 @@ int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE])
             } else {
                 acao = INICIAR;
                 agente.estado = COLETAR;
-                index_ponto_atual = 0;
+                atual = primeiro;
+                // index_ponto_atual = 0;
             }
             break;
     }
@@ -250,13 +283,14 @@ int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         case PEGAR:
             agente.item->tipoItem = ambiente[linha_atual][coluna_atual];
-            agente.historico[index_ponto_atual]->y = linha_atual;
-            agente.historico[index_ponto_atual]->x = coluna_atual;
+            atual->y = linha_atual;
+            atual->x = coluna_atual;
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;
         case SOLTAR:
             pts += agente.item->tipoItem;
             agente.item->tipoItem = SEM_ITEM;
+            atual = atual->proximo;
             agente.acao_anterior = SOLTAR;
             break;
         case INICIAR:
@@ -264,6 +298,7 @@ int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         default:
             printf("Case default.\n");
+            printf("Acao == %d\n", acao);
             confirmacao = 0;
             break;
     }
