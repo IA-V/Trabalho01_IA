@@ -236,8 +236,6 @@ int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         case PEGAR:
             agente.item->tipoItem = ambiente[linha_atual][coluna_atual];
-            atual->y = linha_atual;
-            atual->x = coluna_atual;
             atual = atual->proximo;
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;

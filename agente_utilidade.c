@@ -50,11 +50,11 @@ void iniciarAU()
         atuadorAU(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
         atual = primeiro;
-        while(atual->proximo != NULL)
+        /*while(atual->proximo != NULL)
         {
             printf("Ponto do historico: X = %d, Y = %d, pts = %.2f\n", atual->x, atual->y, atual->pontuacao);
             atual = atual->proximo;
-        }
+        }*/
         // printf("pts = %d\n", pts);
         /*printf("tamanho do historico = %d\n", tamanho_historico);
         printf("indice da fila = %d\n", indice_fila_pontos);*/
@@ -187,8 +187,11 @@ int coletarAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atua
         {
             case TIPO1:
             case TIPO2:
-                acao = PEGAR;
-                break;
+                if(fila_pontos[indice_fila_pontos]->x == coluna_atual && fila_pontos[indice_fila_pontos]->y == linha_atual)
+                {
+                    acao = PEGAR;
+                    break;
+                }
             case SEM_ITEM:
                 if(coluna_atual < fila_pontos[indice_fila_pontos]->x)
                 {
@@ -199,16 +202,14 @@ int coletarAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atua
                 } else {
                     acao = SOLTAR;
                     printf("AGENTE -> X = %d, Y = %d\n", fila_pontos[indice_fila_pontos]->x, fila_pontos[indice_fila_pontos]->y);
-                    while(primeiro->proximo != NULL)
-                    {
-                        printf("Ponto do historico: X = %d, Y = %d, pts = %.2f\n", primeiro->x, primeiro->y, primeiro->pontuacao);
-                        primeiro = primeiro->proximo;
-                    }
+                    printf("INDICE FILA = %d\n", indice_fila_pontos);
+                    printf("LINHA ATUAL = %d\n", linha_atual);
+                    printf("COLUNA ATUAL = %d\n", coluna_atual);
                     printf("\n");
-                    /*for(int i = 0; i < tamanho_historico; i++)
+                    for(int i = 0; i < tamanho_historico; i++)
                     {
                         printf("Ponto %d: X = %d, Y = %d, pts = %.2f\n", i, fila_pontos[i]->x, fila_pontos[i]->y, fila_pontos[i]->pontuacao);
-                    }*/
+                    }
                     system("pause");
                     // pts = 150;
                 }
@@ -289,8 +290,6 @@ int atuadorAU(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         case PEGAR:
             agente.item->tipoItem = ambiente[linha_atual][coluna_atual];
-            fila_pontos[indice_fila_pontos]->y = linha_atual;
-            fila_pontos[indice_fila_pontos]->x = coluna_atual;
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             indice_fila_pontos++;
             break;
