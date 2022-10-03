@@ -21,4 +21,6 @@ void alocar_mem();
 int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE]); // recebe um vetor com as coordenadas atuais e retorna um inteiro que representa a acao a ser tomada a seguir
 int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[][TAMANHO_AMBIENTE], int *pos_atual); // recebe um inteiro que representa a acao a ser tomada e retorna a confirmacao (ou nao) da realizacao
 
+void printar_historico();
+
 #endif

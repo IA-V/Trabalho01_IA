@@ -45,7 +45,7 @@ void adiciona_itens_ambiente(int ambiente[][TAMANHO_AMBIENTE])
         linha = rand() % TAMANHO_AMBIENTE;
         coluna = rand() % TAMANHO_AMBIENTE;
 
-        while(linha == 0 && coluna == 0) {
+        while((linha == 0 && coluna == 0) && ambiente[linha][coluna] != 0) {
             linha = rand() % TAMANHO_AMBIENTE;
             coluna = rand() % TAMANHO_AMBIENTE;
         }

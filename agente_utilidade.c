@@ -1,79 +1,77 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <math.h>
 
-#include "agente_objetivos.h"
+#include "agente_utilidade.h"
 
 typedef struct _ponto_
 {
     int x;
     int y;
+    float pontuacao;
     struct _ponto_ *proximo;
 } Ponto;
 
-typedef struct _agente_objetivos_
+typedef struct _agente_utilidade_
 {
     int estado;
     int acao_anterior;
     Ponto *historico;
     Item *item;
-} Agente_Objetivos;
+} Agente_Utilidade;
 
-Agente_Objetivos agente;
+int tamanho_historico = 0;
+int indice_fila_pontos = 0;
+
+Agente_Utilidade agente;
 Ponto *atual, *primeiro;
-int pts;
+Ponto **fila_pontos;
+int pts = 0;
 
-void iniciarBO()
+void iniciarAU()
 {
     agente.item = (Item*)malloc(sizeof(Item));
     agente.item->tipoItem = SEM_ITEM;
     agente.acao_anterior = INICIAR;
 
     agente.historico = (Ponto*)malloc(sizeof(Ponto));
-    // agente.historico[0] = (Ponto*)malloc(sizeof(Ponto));
     primeiro = agente.historico;
-    atual = agente.historico;
     agente.historico->proximo = NULL;
-    /*agente.historico[0]->x = 0;
-    agente.historico[0]->y = 0;*/
-
-    // printf("%d\n", agente.historico[0]->x);
 
     agente.estado = RECON;
-    // (Ponto*)realloc(historico, (sizeof(historico)/sizeof(historico[0]) + 1) * sizeof(Ponto))
-    // printf("%d\n", sizeof(agente.historico)/sizeof(agente.historico[0]));
 
     int *pos_atual;
     int acao;
 
     do {
-        pos_atual = sensorBO(ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
-        acao = funcaoAgenteBO(pos_atual, ambiente);
-        atuadorBO(acao, ambiente, ambiente_virtual, pos_atual);
+        pos_atual = sensorAU(ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
+        acao = funcaoAgenteAU(pos_atual, ambiente);
+        atuadorAU(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
-        // printar_historico();
+        atual = primeiro;
+        while(atual->proximo != NULL)
+        {
+            printf("Ponto do historico: X = %d, Y = %d, pts = %.2f\n", atual->x, atual->y, atual->pontuacao);
+            atual = atual->proximo;
+        }
+        // printf("pts = %d\n", pts);
+        /*printf("tamanho do historico = %d\n", tamanho_historico);
+        printf("indice da fila = %d\n", indice_fila_pontos);*/
     }while(pts < 150);
-
-    printar_historico();
+    while(atual->proximo != NULL)
+    {
+        printf("Ponto do historico: X = %d, Y = %d, pts = %.2f\n", atual->x, atual->y, atual->pontuacao);
+        atual = atual->proximo;
+    }
     printf("pts = %d\n", pts);
 
-    // free(pos_atual);
+    free(agente.item);
+    free(agente.historico);
+    free(fila_pontos);
 }
 
-void printar_historico()
-{
-    Ponto *aux = primeiro;
-    int i = 1;
-    printf("\tHISTORICO DE ITENS:\n");
-    while(aux != NULL)
-    {
-        printf("Ponto %d: X = %d, Y = %d\n", i, aux->x, aux->y);
-        aux = aux->proximo;
-        i++;
-    }
-}
-
-int *sensorBO(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
+int *sensorAU(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
 {
     int *pos_atual = (int *)malloc(2*sizeof(int)); // Armazena a linha e a coluna atual (respectivamente) do agente no ambiente
 
@@ -93,18 +91,56 @@ int *sensorBO(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
     return pos_atual;
 }
 
-void alocar_mem()
+void alocar_mem_historico()
 {
-    Ponto *aux = agente.historico;
+    agente.historico->proximo = (Ponto*)malloc(sizeof(Ponto));
+
+    /*Ponto *aux = agente.historico;
     while(aux != NULL)
     {
         aux = aux->proximo;
     }
     agente.historico->proximo = (Ponto*)malloc(sizeof(Ponto));
-    agente.historico->proximo->proximo = NULL;
+    agente.historico->proximo->proximo = NULL;*/
 }
 
-int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
+float calc_pontuacaoAU(int x, int y, int tipo_item)
+{
+    float dist_pontos = sqrt(pow(x-0, 2) + pow(y-0, 2));
+    float pontuacao = tipo_item / dist_pontos;
+
+    return pontuacao;
+}
+
+void select_sort_pontos()
+{
+   for(int i = 0; i < tamanho_historico-1; i++) {
+      int maior = i;
+      for(int j = i + 1; j < tamanho_historico; j++) {
+         if (fila_pontos[j]->pontuacao > fila_pontos[maior]->pontuacao) maior = j;
+      }
+      Ponto *aux = fila_pontos[i];
+      fila_pontos[i] = fila_pontos[maior];
+      fila_pontos[maior] = aux;
+   }
+}
+
+void vetorizarAU(Ponto *primeiro_ponto) // Cria um vetor de mesmo tamanho que o historico com os pontos descobertos (sem ser lista encadeada)
+{
+    Ponto *ponto_atual = primeiro_ponto;
+    fila_pontos = (Ponto **)malloc(tamanho_historico * sizeof(Ponto *));
+
+    int indice = 0;
+
+    while(ponto_atual->proximo != NULL)
+    {
+        fila_pontos[indice] = ponto_atual;
+        ponto_atual = ponto_atual->proximo;
+        indice++;
+    }
+}
+
+int reconhecerAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
 {
     int acao;
     int indice = 0;
@@ -114,11 +150,14 @@ int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atu
         case TIPO2:
             agente.historico->x = coluna_atual;
             agente.historico->y = linha_atual;
+            agente.historico->pontuacao = calc_pontuacaoAU(coluna_atual, linha_atual, ambiente[linha_atual][coluna_atual]);
             if(agente.historico->proximo == NULL)
             {
-                alocar_mem();
+                alocar_mem_historico();
             }
             agente.historico = agente.historico->proximo;
+            agente.historico->proximo = NULL;
+            tamanho_historico++;
         case SEM_ITEM: // Movimentacao padrao
             if(linha_atual % 2 == 0 && coluna_atual < TAMANHO_AMBIENTE-1)
             {
@@ -126,6 +165,8 @@ int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atu
             } else if(linha_atual % 2 != 0 && coluna_atual > 0) {
                 acao = ESQUERDA;
             } else if(linha_atual == 19 && coluna_atual == 0){
+                vetorizarAU(primeiro);
+                select_sort_pontos();
                 agente.estado = CASA;
                 acao = CIMA;
             } else if((linha_atual % 2 == 0 && coluna_atual == TAMANHO_AMBIENTE-1) || (linha_atual % 2 != 0 && coluna_atual == 0)) {
@@ -137,7 +178,7 @@ int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atu
     return acao;
 }
 
-int coletar(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
+int coletarAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
 {
     int acao;
     if(agente.item->tipoItem == SEM_ITEM)
@@ -149,14 +190,27 @@ int coletar(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
                 acao = PEGAR;
                 break;
             case SEM_ITEM:
-                if(coluna_atual < atual->x)
+                if(coluna_atual < fila_pontos[indice_fila_pontos]->x)
                 {
                     acao = DIREITA;
-                } else if(linha_atual < atual->y)
+                } else if(linha_atual < fila_pontos[indice_fila_pontos]->y)
                 {
                     acao = BAIXO;
                 } else {
-                    acao = PEGAR;
+                    acao = SOLTAR;
+                    printf("AGENTE -> X = %d, Y = %d\n", fila_pontos[indice_fila_pontos]->x, fila_pontos[indice_fila_pontos]->y);
+                    while(primeiro->proximo != NULL)
+                    {
+                        printf("Ponto do historico: X = %d, Y = %d, pts = %.2f\n", primeiro->x, primeiro->y, primeiro->pontuacao);
+                        primeiro = primeiro->proximo;
+                    }
+                    printf("\n");
+                    /*for(int i = 0; i < tamanho_historico; i++)
+                    {
+                        printf("Ponto %d: X = %d, Y = %d, pts = %.2f\n", i, fila_pontos[i]->x, fila_pontos[i]->y, fila_pontos[i]->pontuacao);
+                    }*/
+                    system("pause");
+                    // pts = 150;
                 }
 
                 break;
@@ -176,7 +230,7 @@ int coletar(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
     return acao;
 }
 
-int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE])
+int funcaoAgenteAU(int *pos, int ambiente[][TAMANHO_AMBIENTE])
 {
     // Acao com base na pos
     int linha_atual = pos[0];
@@ -187,10 +241,10 @@ int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE])
     switch(agente.estado)
     {
         case RECON:
-            acao = reconhecer(ambiente, linha_atual, coluna_atual);
+            acao = reconhecerAU(ambiente, linha_atual, coluna_atual);
             break;
         case COLETAR:
-            acao = coletar(ambiente, linha_atual, coluna_atual);
+            acao = coletarAU(ambiente, linha_atual, coluna_atual);
             break;
         case CASA:
             if(linha_atual > 0)
@@ -201,8 +255,7 @@ int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE])
             } else {
                 acao = INICIAR;
                 agente.estado = COLETAR;
-                atual = primeiro;
-                // index_ponto_atual = 0;
+                indice_fila_pontos = 0;
             }
             break;
     }
@@ -210,7 +263,7 @@ int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE])
     return acao;
 }
 
-int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[][TAMANHO_AMBIENTE], int *pos_atual)
+int atuadorAU(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[][TAMANHO_AMBIENTE], int *pos_atual)
 {
     int linha_atual = pos_atual[0];
     int coluna_atual = pos_atual[1];
@@ -236,10 +289,10 @@ int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         case PEGAR:
             agente.item->tipoItem = ambiente[linha_atual][coluna_atual];
-            atual->y = linha_atual;
-            atual->x = coluna_atual;
-            atual = atual->proximo;
+            fila_pontos[indice_fila_pontos]->y = linha_atual;
+            fila_pontos[indice_fila_pontos]->x = coluna_atual;
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
+            indice_fila_pontos++;
             break;
         case SOLTAR:
             pts += agente.item->tipoItem;

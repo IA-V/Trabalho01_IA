@@ -44,6 +44,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="agente_reativo_simples.h" />
+		<Unit filename="agente_utilidade.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="agente_utilidade.h" />
 		<Unit filename="ambiente.c">
 			<Option compilerVar="CC" />
 		</Unit>

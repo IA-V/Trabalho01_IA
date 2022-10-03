@@ -5,6 +5,7 @@
 #include "agente_reativo_simples.h"
 #include "agente_reativo_modelos.h"
 #include "agente_objetivos.h"
+#include "agente_utilidade.h"
 #include "item.h"
 #include "ambiente.h"
 
@@ -23,6 +24,7 @@ int main()
 
     // iniciarRS();
     // iniciarRM();
-    iniciarBO();
+    // iniciarBO();
+    iniciarAU();
     return 0;
 }
