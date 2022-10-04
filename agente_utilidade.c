@@ -27,7 +27,7 @@ int indice_fila_pontos = 0;
 Agente_Utilidade agente;
 Ponto *atual, *primeiro;
 Ponto **fila_pontos;
-int pts = 0;
+int pts4 = 0;
 
 void iniciarAU()
 {
@@ -58,13 +58,13 @@ void iniciarAU()
         // printf("pts = %d\n", pts);
         /*printf("tamanho do historico = %d\n", tamanho_historico);
         printf("indice da fila = %d\n", indice_fila_pontos);*/
-    }while(pts < 150);
-    while(atual->proximo != NULL)
+    }while(pts4 < 150);
+    /*while(atual->proximo != NULL)
     {
-        printf("Ponto do historico: X = %d, Y = %d, pts = %.2f\n", atual->x, atual->y, atual->pontuacao);
+        printf("Ponto do historico: X = %d, Y = %d, pts4 = %.2f\n", atual->x, atual->y, atual->pontuacao);
         atual = atual->proximo;
-    }
-    printf("pts = %d\n", pts);
+    }*/
+    printf("pts = %d\n", pts4);
 
     free(agente.item);
     free(agente.historico);
@@ -182,7 +182,7 @@ void remover_item_fila(int linha, int coluna)
                 fila_pontos[j] = fila_pontos[j+1];
                 j++;
             }
-            free(fila_pontos[tamanho_historico-1]);
+            // free(fila_pontos[tamanho_historico-1]);
             indice_fila_pontos--;
             tamanho_historico--;
             break;
@@ -200,7 +200,8 @@ int coletarAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atua
             case TIPO1:
             case TIPO2:
                 acao = PEGAR;
-                if((fila_pontos[indice_fila_pontos]->x == coluna_atual && fila_pontos[indice_fila_pontos]->y != linha_atual) || (fila_pontos[indice_fila_pontos]->x != coluna_atual && fila_pontos[indice_fila_pontos]->y == linha_atual))
+                //remover_item_fila(linha_atual, coluna_atual);
+                if((fila_pontos[indice_fila_pontos]->x == coluna_atual && fila_pontos[indice_fila_pontos]->y != linha_atual) || (fila_pontos[indice_fila_pontos]->x != coluna_atual && fila_pontos[indice_fila_pontos]->y == linha_atual) || (linha_atual == 0 && fila_pontos[indice_fila_pontos]->x != coluna_atual))
                 {
                     remover_item_fila(linha_atual, coluna_atual);
                 }
@@ -307,7 +308,7 @@ int atuadorAU(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             indice_fila_pontos++;
             break;
         case SOLTAR:
-            pts += agente.item->tipoItem;
+            pts4 += agente.item->tipoItem;
             agente.item->tipoItem = SEM_ITEM;
             agente.acao_anterior = SOLTAR;
             break;

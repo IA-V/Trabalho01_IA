@@ -19,7 +19,7 @@ typedef struct _reativo_modelos_
 
 
 Reativo_Modelos agente;
-int pts;
+int pts2 = 0;
 
 void iniciarRM()
 {
@@ -39,9 +39,9 @@ void iniciarRM()
         acao = funcaoAgenteRM(pos_atual, ambiente);
         atuadorRM(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
-    }while(pts < 150);
+    }while(pts2 < 150);
 
-    printf("pts = %d\n", pts);
+    printf("pts = %d\n", pts2);
 
     free(pos_atual);
 }
@@ -154,7 +154,7 @@ int atuadorRM(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;
         case SOLTAR:
-            pts += agente.item->tipoItem;
+            pts2 += agente.item->tipoItem;
             agente.item->tipoItem = SEM_ITEM;
             agente.acao_anterior = SOLTAR;
             break;

@@ -11,8 +11,12 @@
 
 int main()
 {
+    int escolha;
     time_t t;
     srand((unsigned) time(&t));
+
+    printf("Escolha o tipo de agente:\n1 - Reativo simples\n2 - Reativo baseado em modelos\n3 - Agente com objetivos\n4 - Agente baseado em utilidade\n");
+    scanf("%d", &escolha);
 
     inicializar_ambiente(ambiente_virtual);
     inicializar_ambiente(ambiente);
@@ -21,14 +25,33 @@ int main()
 
     adiciona_itens_ambiente(ambiente);
 
-    clock_t begin = clock();
+    clock_t begin = 0;
+    clock_t end = 0;
 
-    // iniciarRS();
-    // iniciarRM();
-    // iniciarBO();
-    iniciarAU();
+    switch(escolha)
+    {
+        case 1:
+            begin = clock();
+            iniciarRS();
+            end = clock();
+            break;
+        case 2:
+            begin = clock();
+            iniciarRM();
+            end = clock();
+            break;
+        case 3:
+            begin = clock();
+            iniciarBO();
+            end = clock();
+            break;
+        case 4:
+            begin = clock();
+            iniciarAU();
+            end = clock();
+            break;
+    }
 
-    clock_t end = clock();
     double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
     printf("Tempo de execucao = %.2lfs\n", time_spent);
 

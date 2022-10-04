@@ -21,7 +21,7 @@ typedef struct _agente_objetivos_
 
 Agente_Objetivos agente;
 Ponto *atual, *primeiro;
-int pts;
+int pts3 = 0;
 
 void iniciarBO()
 {
@@ -52,10 +52,10 @@ void iniciarBO()
         atuadorBO(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
         // printar_historico();
-    }while(pts < 150);
+    }while(pts3 < 150);
 
     // printar_historico();
-    printf("pts = %d\n", pts);
+    printf("pts = %d\n", pts3);
 
     // free(pos_atual);
 }
@@ -236,7 +236,7 @@ int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;
         case SOLTAR:
-            pts += agente.item->tipoItem;
+            pts3 += agente.item->tipoItem;
             agente.item->tipoItem = SEM_ITEM;
             agente.acao_anterior = SOLTAR;
             break;

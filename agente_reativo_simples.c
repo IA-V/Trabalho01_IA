@@ -11,7 +11,7 @@ typedef struct _reativo_simples_
 
 
 Reativo_Simples agente;
-int pts;
+int pts1 = 0;
 
 void iniciarRS()
 {
@@ -26,9 +26,9 @@ void iniciarRS()
         acao = funcaoAgenteRS(pos_atual, ambiente);
         atuadorRS(acao, ambiente, ambiente_virtual, pos_atual);
         exibir_ambiente(ambiente, ambiente_virtual, TAMANHO_AMBIENTE, TAMANHO_AMBIENTE);
-    }while(pts < 150);
+    }while(pts1 < 150);
 
-    printf("pts = %d\n", pts);
+    printf("pts = %d\n", pts1);
 
     free(pos_atual);
 }
@@ -125,7 +125,7 @@ int atuadorRS(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;
         case SOLTAR:
-            pts += agente.item->tipoItem;
+            pts1 += agente.item->tipoItem;
             agente.item->tipoItem = SEM_ITEM;
             break;
         case INICIAR:
