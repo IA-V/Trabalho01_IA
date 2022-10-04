@@ -94,14 +94,6 @@ int *sensorAU(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
 void alocar_mem_historico()
 {
     agente.historico->proximo = (Ponto*)malloc(sizeof(Ponto));
-
-    /*Ponto *aux = agente.historico;
-    while(aux != NULL)
-    {
-        aux = aux->proximo;
-    }
-    agente.historico->proximo = (Ponto*)malloc(sizeof(Ponto));
-    agente.historico->proximo->proximo = NULL;*/
 }
 
 float calc_pontuacaoAU(int x, int y, int tipo_item)
@@ -178,6 +170,26 @@ int reconhecerAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_a
     return acao;
 }
 
+void remover_item_fila(int linha, int coluna)
+{
+    for(int i = 0; i < tamanho_historico; i++)
+    {
+        if(fila_pontos[i]->x == coluna && fila_pontos[i]->y == linha)
+        {
+            int j = i;
+            while(j < tamanho_historico-1)
+            {
+                fila_pontos[j] = fila_pontos[j+1];
+                j++;
+            }
+            free(fila_pontos[tamanho_historico-1]);
+            indice_fila_pontos--;
+            tamanho_historico--;
+            break;
+        }
+    }
+}
+
 int coletarAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
 {
     int acao;
@@ -187,11 +199,12 @@ int coletarAU(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atua
         {
             case TIPO1:
             case TIPO2:
-                if(fila_pontos[indice_fila_pontos]->x == coluna_atual && fila_pontos[indice_fila_pontos]->y == linha_atual)
+                acao = PEGAR;
+                if((fila_pontos[indice_fila_pontos]->x == coluna_atual && fila_pontos[indice_fila_pontos]->y != linha_atual) || (fila_pontos[indice_fila_pontos]->x != coluna_atual && fila_pontos[indice_fila_pontos]->y == linha_atual))
                 {
-                    acao = PEGAR;
-                    break;
+                    remover_item_fila(linha_atual, coluna_atual);
                 }
+                break;
             case SEM_ITEM:
                 if(coluna_atual < fila_pontos[indice_fila_pontos]->x)
                 {

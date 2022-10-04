@@ -12,7 +12,6 @@
 int main()
 {
     time_t t;
-
     srand((unsigned) time(&t));
 
     inicializar_ambiente(ambiente_virtual);
@@ -22,9 +21,16 @@ int main()
 
     adiciona_itens_ambiente(ambiente);
 
+    clock_t begin = clock();
+
     // iniciarRS();
     // iniciarRM();
     // iniciarBO();
     iniciarAU();
+
+    clock_t end = clock();
+    double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+    printf("Tempo de execucao = %.2lfs\n", time_spent);
+
     return 0;
 }

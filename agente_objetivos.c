@@ -54,7 +54,7 @@ void iniciarBO()
         // printar_historico();
     }while(pts < 150);
 
-    printar_historico();
+    // printar_historico();
     printf("pts = %d\n", pts);
 
     // free(pos_atual);
@@ -95,13 +95,7 @@ int *sensorBO(int ambiente[][TAMANHO_AMBIENTE], int linhas, int colunas)
 
 void alocar_mem()
 {
-    Ponto *aux = agente.historico;
-    while(aux != NULL)
-    {
-        aux = aux->proximo;
-    }
     agente.historico->proximo = (Ponto*)malloc(sizeof(Ponto));
-    agente.historico->proximo->proximo = NULL;
 }
 
 int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atual)
@@ -119,6 +113,7 @@ int reconhecer(int ambiente[][TAMANHO_AMBIENTE], int linha_atual, int coluna_atu
                 alocar_mem();
             }
             agente.historico = agente.historico->proximo;
+            agente.historico->proximo = NULL;
         case SEM_ITEM: // Movimentacao padrao
             if(linha_atual % 2 == 0 && coluna_atual < TAMANHO_AMBIENTE-1)
             {
@@ -202,7 +197,6 @@ int funcaoAgenteBO(int *pos, int ambiente[][TAMANHO_AMBIENTE])
                 acao = INICIAR;
                 agente.estado = COLETAR;
                 atual = primeiro;
-                // index_ponto_atual = 0;
             }
             break;
     }
@@ -236,6 +230,8 @@ int atuadorBO(int acao, int ambiente[][TAMANHO_AMBIENTE], int ambiente_virtual[]
             break;
         case PEGAR:
             agente.item->tipoItem = ambiente[linha_atual][coluna_atual];
+            /*atual->y = linha_atual;
+            atual->x = coluna_atual;*/
             atual = atual->proximo;
             ambiente[linha_atual][coluna_atual] = SEM_ITEM;
             break;
